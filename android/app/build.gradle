@@ -79,6 +79,12 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+def keystoreProperties = new Properties()
+
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -101,12 +107,10 @@ android {
             keyPassword 'android'
         }
         release {
-          if (project.hasProperty('STORE_FILE')) {
-              storeFile file(STORE_FILE)
-              storePassword STORE_PASSWORD
-              keyAlias KEY_ALIAS
-              keyPassword KEY_PASSWORD
-          }
+            storeFile file(keystoreProperties['storeFile'])
+            keyAlias keystoreProperties['keyAlias']
+            storePassword keystoreProperties['storePassword']
+            keyPassword keystoreProperties['keyPassword']
         }
     }
     buildTypes {
