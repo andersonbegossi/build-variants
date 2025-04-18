@@ -1,3 +1,11 @@
+project 'BuildVariants',
+ 'Debug' => :debug,
+ 'Release' => :release,
+ 'DebugProduction' => :debug,
+ 'ReleaseProduction' => :release,
+ 'DebugStaging' => :debug,
+ 'ReleaseStaging' => :release
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -23,6 +31,15 @@ target 'BuildVariants' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  ENVFILES = {
+    'Debug' => '$(PODS_ROOT)/../../.env',
+    'DebugStaging' => '$(PODS_ROOT)/../../.env.staging',
+    'DebugProduction' => '$(PODS_ROOT)/../../.env.production',
+    'Release' => '$(PODS_ROOT)/../../.env',
+    'ReleaseStaging' => '$(PODS_ROOT)/../../.env.staging',
+    'ReleaseProduction' => '$(PODS_ROOT)/../../.env.production',
+  }
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -31,5 +48,13 @@ target 'BuildVariants' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        if target.name == 'react-native-config'
+          config.build_settings['ENVFILE'] = ENVFILES[config.name]
+        end
+      end
+    end
   end
 end

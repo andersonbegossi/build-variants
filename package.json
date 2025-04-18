@@ -6,7 +6,9 @@
     "android": "react-native run-android --mode=developmentDebug --appId=com.buildvariants.dev",
     "android-stg": "react-native run-android --mode=stagingDebug --appId=com.buildvariants.staging",
     "android-prod": "react-native run-android --mode=productionDebug",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --scheme=BuildVariantsDevelopment --mode=Debug",
+    "ios-stg": "react-native run-ios --scheme=BuildVariantsStaging --mode=DebugStaging",
+    "ios-prod": "react-native run-ios --scheme=BuildVariantsProduction --mode=DebugProduction",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
